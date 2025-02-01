@@ -4,7 +4,7 @@ import mlflow
 import requests
 
 # Load environment variables
-dotenv.load_dotenv("../.env")
+dotenv.load_dotenv(".env")
 
 def test_model_availability():
     
