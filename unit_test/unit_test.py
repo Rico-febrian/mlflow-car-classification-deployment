@@ -33,4 +33,3 @@ def test_predict_on_ci():
     
     # Assert
     assert res.status_code == 200
-    
