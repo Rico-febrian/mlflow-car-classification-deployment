@@ -34,6 +34,10 @@ jobs:
           echo "MODEL_ALIAS: ${{ secrets.MODEL_ALIAS_STG }}"
           echo "MODEL_SERVER_IP: ${{ secrets.MODEL_SERVER_IP_CI }}"
 
+      - name: Check .env file
+        run: |
+          cat .env
+
       # Step 5: Build and Run Docker Container
       - name: Build container
         run: |
@@ -43,13 +47,11 @@ jobs:
       - name: Check API Server Logs
         run: |
           docker ps  # Cek apakah container API server jalan
-          docker logs mlflow_api  # Cek logs container API server
+          docker logs -f mlflow_api  # Cek logs container API server
 
       - name: Test API Server
         run: |
-          curl -X POST http://localhost:8080/predict/ \
-          -H "Content-Type: application/json" \
-          -d '{"x1": 1, "x2": 1, "x3": 1, "x4": 1}'
+          curl -X POST http://localhost:8080/predict/
 
       # Step 8: Install Dependencies
       - name: Install dependencies
