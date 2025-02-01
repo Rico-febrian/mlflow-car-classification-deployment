@@ -7,7 +7,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 
 # Load environment variables
-dotenv.load_dotenv("../.env")
+dotenv.load_dotenv(".env")
 
 # Set up mlflow tracking server and model
 MLFLOW_TRACKING_URI = os.getenv("MLFLOW_TRACKING_URI")
