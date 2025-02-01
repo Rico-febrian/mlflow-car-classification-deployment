@@ -26,7 +26,7 @@ def test_predict_on_ci():
     # Arrange
     MODEL_SERVER_IP = os.getenv("MODEL_SERVER_IP")
     
-    data = {"x1" : 1, "x2": 1, "x3": 1, "x4" : 1}
+    data = {"x1" : 1.0, "x2": 1.0, "x3": 1.0, "x4" : 1.0}
     
     # Act
     res = requests.post(MODEL_SERVER_IP, json=data)
