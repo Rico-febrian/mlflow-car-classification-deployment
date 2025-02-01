@@ -1,0 +1,30 @@
+version: '3'
+
+name: mlflow_api
+services:
+  api:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    image: ricofebrian405/mlflow_api
+    container_name: mlflow_api
+    ports:
+      - 8080:8080
+    env_file:
+      - .env
+
+  api_stg:
+    image: ricofebrian405/mlflow_api
+    container_name: mlflow_api_stg
+    ports:
+      - 8080:8080
+    env_file:
+      - .env
+
+  api_prod:
+    image: ricofebrian405/mlflow_api
+    container_name: mlflow_api_prod
+    ports:
+      - 8080:8080
+    env_file:
+      - .env

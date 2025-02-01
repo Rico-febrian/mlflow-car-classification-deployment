@@ -1,0 +1,5 @@
+outs:
+- md5: ffdf691a67014ee3d438f0f7c294bd4a
+  size: 661
+  hash: md5
+  path: ohe_lug_boot.pkl

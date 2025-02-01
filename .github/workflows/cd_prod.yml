@@ -1,0 +1,83 @@
+name: CD_PRODUCTION
+
+on:
+    release:
+        types:
+            - published
+            - edited
+
+permissions:
+    contents: read
+
+jobs:
+    build-push:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: actions/checkout@v4
+        - name: Set up Python 3.12
+          uses: actions/setup-python@v3
+          with:
+            python-version: "3.12"
+        - name: Login to Docker Hub
+          uses: docker/login-action@v2
+          with:
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_TOKEN }}
+        - name: Create .env file
+          run: |
+            echo "MLFLOW_TRACKING_USERNAME=${{ secrets.MLFLOW_TRACKING_USERNAME }}" >> .env
+            echo "MLFLOW_TRACKING_PASSWORD=${{ secrets.MLFLOW_TRACKING_PASSWORD }}" >> .env
+            echo "MLFLOW_TRACKING_URI=${{ secrets.MLFLOW_TRACKING_URI }}" >> .env
+            echo "MODEL_ALIAS=${{ secrets.MODEL_ALIAS_PROD }}" >> .env
+        - name: Build container
+          run: |
+            docker compose build
+            docker tag ricofebrian405/mlflow_api ricofebrian405/mlflow_api:${{ github.ref_name }}
+            docker push ricofebrian405/mlflow_api:${{ github.ref_name }}
+            docker tag ricofebrian405/mlflow_api ricofebrian405/mlflow_api:latest
+            docker push ricofebrian405/mlflow_api:latest
+        
+    deploy:
+        runs-on: ubuntu-latest
+        needs: build-push
+        steps:
+        - uses: actions/checkout@v4
+        - name: Create SSH configuration file
+          env:
+            SSH_USER: ${{ secrets.SSH_USER_PROD }}
+            SSH_KEY: ${{ secrets.SSH_KEY_PROD }}
+            SSH_HOST_PROD_1: ${{ secrets.SSH_HOST_PROD_1 }}
+            SSH_HOST_PROD_2: ${{ secrets.SSH_HOST_PROD_2 }}
+          run: |
+            mkdir -p ~/.ssh/
+            echo "$SSH_KEY" > ~/.ssh/deployment.pem
+            chmod 600 ~/.ssh/deployment.pem
+            cat >> ~/.ssh/config <<END
+            Host deploy_prod_1
+                HostName $SSH_HOST_PROD_1
+                User $SSH_USER
+                IdentityFile ~/.ssh/deployment.pem
+                StrictHostKeyChecking no
+            Host deploy_prod_2
+                HostName $SSH_HOST_PROD_2
+                User $SSH_USER
+                IdentityFile ~/.ssh/deployment.pem
+                StrictHostKeyChecking no
+            END
+        - name: Create .env file
+          run: |
+            echo "MLFLOW_TRACKING_USERNAME=${{ secrets.MLFLOW_TRACKING_USERNAME }}" >> .env
+            echo "MLFLOW_TRACKING_PASSWORD=${{ secrets.MLFLOW_TRACKING_PASSWORD }}" >> .env
+            echo "MLFLOW_TRACKING_URI=${{ secrets.MLFLOW_TRACKING_URI }}" >> .env
+            echo "MODEL_ALIAS=${{ secrets.MODEL_ALIAS_PROD }}" >> .env
+        - name: Deploy to Production server 1
+          run: |
+            scp docker-compose.yaml .env deploy_prod_1:.
+            ssh deploy_prod_1 "sudo docker compose down && sudo docker system prune -af"
+            ssh deploy_prod_1 "sudo docker compose pull && sudo docker compose up api_prod -d"
+        - name: Deploy to Production server 2
+          run: |
+            scp docker-compose.yaml .env deploy_prod_2:.
+            ssh deploy_prod_2 "sudo docker compose down && sudo docker system prune -af"
+            ssh deploy_prod_2 "sudo docker compose pull && sudo docker compose up api_prod -d"  
+

@@ -1,0 +1,5 @@
+outs:
+- md5: 04b20282434511157f7d53ff56fbdca2
+  size: 681
+  hash: md5
+  path: ohe_doors.pkl

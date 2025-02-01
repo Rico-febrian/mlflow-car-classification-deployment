@@ -1,0 +1,5 @@
+outs:
+- md5: 8c91e91d4316424d0731e2a99e08518b
+  size: 123319
+  hash: md5
+  path: car_postgres.csv
