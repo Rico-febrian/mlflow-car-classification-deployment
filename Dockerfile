@@ -4,7 +4,7 @@ WORKDIR /home
 
 COPY ./requirements.txt ./
 
-COPY .api.py ./src/api.py
+COPY ./api.py ./src/api.py
 
 RUN \
 apt-get update && \
