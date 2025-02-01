@@ -16,10 +16,7 @@ def test_model_availability():
     mlflow.set_experiment("Car Classification")
     
     # Act
-    try:
-        chosen_model = mlflow.pyfunc.load_model(f"models:/Logistic Regression@{CHOSEN_MODEL}")
-    except Exception as e:
-        assert False, f"Failed to load model: {e}"
+    chosen_model = mlflow.pyfunc.load_model(f"models:/Logistic Regression@{CHOSEN_MODEL}")
     
     # Assert
     assert type(chosen_model) == mlflow.pyfunc.PyFuncModel
@@ -32,10 +29,7 @@ def test_predict_on_ci():
     data = {"x1" : 1, "x2": 1, "x3": 1, "x4" : 1}
     
     # Act
-    try:
-        res = requests.post(MODEL_SERVER_IP, json=data)
-    except Exception as e:
-        assert False, f"Failed to make request: {e}"
+    res = requests.post(MODEL_SERVER_IP, json=data)
     
     # Assert
     assert res.status_code == 200
