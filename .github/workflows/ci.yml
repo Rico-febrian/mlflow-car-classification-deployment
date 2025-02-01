@@ -47,7 +47,6 @@ jobs:
       - name: Check API Server Logs
         run: |
           docker ps  # Cek apakah container API server jalan
-          docker logs -f mlflow_api  # Cek logs container API server
 
       - name: Test API Server
         run: |
