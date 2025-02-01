@@ -43,7 +43,13 @@ jobs:
       - name: Check API Server Logs
         run: |
           docker ps  # Cek apakah container API server jalan
-          docker logs $(docker ps -q)  # Cek logs container API server
+          docker logs mlflow_api  # Cek logs container API server
+
+      - name: Test API Server
+        run: |
+          curl -X POST http://localhost:8080/predict/ \
+          -H "Content-Type: application/json" \
+          -d '{"x1": 1, "x2": 1, "x3": 1, "x4": 1}'
 
       # Step 8: Install Dependencies
       - name: Install dependencies
