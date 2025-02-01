@@ -17,4 +17,4 @@ pip install -r requirements.txt
 
 EXPOSE 8080
 
-CMD [ "python", "src/api.py" ]
+CMD [ "python", "api.py" ]
