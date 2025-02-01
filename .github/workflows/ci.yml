@@ -32,4 +32,4 @@ jobs:
                 pip install -r requirements.txt
             - name: Test with Pytest
               run: |
-                pytest src/unit_test.py
+                pytest unit_test/unit_test.py
