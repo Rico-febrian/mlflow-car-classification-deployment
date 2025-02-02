@@ -9,7 +9,7 @@ services:
     image: ricofebrian405/car-classification-api
     container_name: mlflow_api
     ports:
-      - 8080:8080
+      - 8081:8081
     env_file:
       - .env
 
