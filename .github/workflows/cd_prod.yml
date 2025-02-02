@@ -32,10 +32,10 @@ jobs:
         - name: Build container
           run: |
             docker compose build
-            docker tag ricofebrian405/mlflow_api ricofebrian405/mlflow_api:${{ github.ref_name }}
-            docker push ricofebrian405/mlflow_api:${{ github.ref_name }}
-            docker tag ricofebrian405/mlflow_api ricofebrian405/mlflow_api:latest
-            docker push ricofebrian405/mlflow_api:latest
+            docker tag ricofebrian405/car-classification-api ricofebrian405/car-classification-api:${{ github.ref_name }}
+            docker push ricofebrian405/car-classification-api:${{ github.ref_name }}
+            docker tag ricofebrian405/car-classification-api ricofebrian405/car-classification-api:latest
+            docker push ricofebrian405/car-classification-api:latest
         
     deploy:
         runs-on: ubuntu-latest
